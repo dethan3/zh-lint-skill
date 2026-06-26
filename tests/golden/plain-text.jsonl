@@ -1,0 +1,8 @@
+{"path": "tests/fixtures/plain-text.md", "line_start": 1, "line_end": 1, "char_offset": 0, "text": "项目说明", "context_type": "prose", "language": "markdown", "surrounding_code": "# 项目说明"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 3, "line_end": 3, "char_offset": 0, "text": "这是一个示例项目，用于测试中文校对功能。", "context_type": "prose", "language": "markdown", "surrounding_code": "这是一个示例项目，用于测试中文校对功能。"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 5, "line_end": 5, "char_offset": 0, "text": "功能特性", "context_type": "prose", "language": "markdown", "surrounding_code": "## 功能特性"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 7, "line_end": 9, "char_offset": 0, "text": "- 支持多种编程语言的注释检测\n- 支持 Markdown 文档的段落提取\n- 支持 YAML frontmatter 解析", "context_type": "prose", "language": "markdown", "surrounding_code": "- 支持多种编程语言的注释检测"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 11, "line_end": 11, "char_offset": 0, "text": "使用方法", "context_type": "prose", "language": "markdown", "surrounding_code": "## 使用方法"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 13, "line_end": 13, "char_offset": 0, "text": "运行以下命令开始扫描：", "context_type": "prose", "language": "markdown", "surrounding_code": "运行以下命令开始扫描："}
+{"path": "tests/fixtures/plain-text.md", "line_start": 19, "line_end": 19, "char_offset": 0, "text": "注意事项", "context_type": "prose", "language": "markdown", "surrounding_code": "## 注意事项"}
+{"path": "tests/fixtures/plain-text.md", "line_start": 21, "line_end": 21, "char_offset": 0, "text": "请确保已安装 Python 3.8 或更高版本。", "context_type": "prose", "language": "markdown", "surrounding_code": "请确保已安装 Python 3.8 或更高版本。"}

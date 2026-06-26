@@ -1,0 +1,26 @@
+{
+  "name": "zh-proofread-skill",
+  "version": "1.0.0",
+  "description": "检查代码注释、文档和纯文本中的中文错别字和语病。",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc",
+    "extract": "tsx scripts/extract-segments.ts",
+    "apply": "tsx scripts/apply-review.ts"
+  },
+  "keywords": [
+    "chinese",
+    "proofread",
+    "linter",
+    "agent-skill"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}

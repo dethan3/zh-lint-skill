@@ -1,0 +1,13 @@
+name: zh-proofread
+display_name: 中文校对
+description: 检查代码注释、文档和纯文本中的中文错别字和语病
+default_prompt: 请检查当前项目中的中文文本，找出错别字和语病
+version: 0.1.0
+author: community
+tags:
+  - chinese
+  - proofreading
+  - typo
+  - grammar
+  - 文档
+  - 校对
