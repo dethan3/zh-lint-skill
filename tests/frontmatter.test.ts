@@ -8,7 +8,7 @@ describe('FrontmatterParsing', () => {
   let tmpdir: string;
 
   beforeEach(() => {
-    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-proofread-fm-'));
+    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-lint-fm-'));
   });
 
   afterEach(() => {

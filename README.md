@@ -1,10 +1,10 @@
-# 中文校对 Skill (zh-proofread)
+# 中文校对 Skill (zh-lint)
 
 检查代码注释、文档和纯文本中的中文错别字和语病。
 
 ## 与 typos-skill 的区别
 
-| | typos-skill | zh-proofread |
+| | typos-skill | zh-lint |
 |---|---|---|
 | 检查对象 | 英文拼写 | 中文错别字和语病 |
 | 检查引擎 | `typos-cli` 规则引擎 | LLM 语义理解 |
@@ -16,13 +16,13 @@
 ### Claude Code
 
 ```bash
-cp -r zh-proofread-skill ~/.claude/skills/zh-proofread
+cp -r zh-lint-skill ~/.claude/skills/zh-lint
 ```
 
 ### Codex
 
 ```bash
-cp -r zh-proofread-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-proofread
+cp -r zh-lint-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-lint
 ```
 
 ## 使用方法
@@ -30,20 +30,20 @@ cp -r zh-proofread-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-proofread
 ### 扫描当前目录
 
 ```bash
-./zh-proofread.sh
-./zh-proofread.sh --summary  # 只显示统计
+./zh-lint.sh
+./zh-lint.sh --summary  # 只显示统计
 ```
 
 ### 扫描指定路径
 
 ```bash
-./zh-proofread.sh src/ docs/
+./zh-lint.sh src/ docs/
 ```
 
 ### 导出审查文件
 
 ```bash
-./zh-proofread.sh --export-review review.jsonl src/
+./zh-lint.sh --export-review review.jsonl src/
 ```
 
 ### 批量处理
@@ -52,22 +52,22 @@ cp -r zh-proofread-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-proofread
 
 ```bash
 # 每批处理 50 个段落
-./zh-proofread.sh --export-review review.jsonl --batch-size 50 src/
+./zh-lint.sh --export-review review.jsonl --batch-size 50 src/
 
 # 续传：跳过前 50 个段落
-./zh-proofread.sh --export-review review.jsonl --batch-size 50 --batch-offset 50 src/
+./zh-lint.sh --export-review review.jsonl --batch-size 50 --batch-offset 50 src/
 ```
 
 ### 预览修改差异
 
 ```bash
-./zh-proofread.sh --diff review.jsonl
+./zh-lint.sh --diff review.jsonl
 ```
 
 ### 应用已批准的修改
 
 ```bash
-./zh-proofread.sh --apply-review review.jsonl
+./zh-lint.sh --apply-review review.jsonl
 ```
 
 ## 工作流程
@@ -141,7 +141,7 @@ cp -r zh-proofread-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-proofread
 
 ## 配置文件
 
-支持 `.zh-proofread.toml` 配置文件：
+支持 `.zh-lint.toml` 配置文件：
 
 ```toml
 # 排除的路径
@@ -154,8 +154,8 @@ terms = ["正则表达式", "哈希表", "yyds"]
 ```
 
 配置文件查找顺序：
-1. 当前目录 `.zh-proofread.toml`
-2. 用户主目录 `~/.zh-proofread.toml`
+1. 当前目录 `.zh-lint.toml`
+2. 用户主目录 `~/.zh-lint.toml`
 
 ## 依赖
 
@@ -165,10 +165,10 @@ terms = ["正则表达式", "哈希表", "yyds"]
 ## 文件结构
 
 ```
-zh-proofread-skill/
+zh-lint-skill/
 ├── SKILL.md                      # Agent 指令
 ├── skill.json                    # 元数据
-├── zh-proofread.sh               # 主入口脚本（唯一入口）
+├── zh-lint.sh               # 主入口脚本（唯一入口）
 ├── scripts/
 │   ├── extract-segments.ts       # 中文文本提取
 │   ├── apply-review.ts           # 应用已批准的修改
@@ -177,7 +177,7 @@ zh-proofread-skill/
 ├── examples/                     # 示例文件
 ├── agents/
 │   └── openai.yaml               # Agent 平台元数据
-├── .zh-proofread.toml            # 配置文件示例
+├── .zh-lint.toml            # 配置文件示例
 ├── README.md                     # 本文件
 └── LICENSE
 ```

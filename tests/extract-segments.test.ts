@@ -69,7 +69,7 @@ describe('SegmentExtractor', () => {
   let tmpdir: string;
 
   beforeEach(() => {
-    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-proofread-test-'));
+    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-lint-test-'));
   });
 
   afterEach(() => {
@@ -182,7 +182,7 @@ describe('scanPaths', () => {
   let tmpdir: string;
 
   beforeEach(() => {
-    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-proofread-scan-'));
+    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-lint-scan-'));
   });
 
   afterEach(() => {

@@ -24,7 +24,7 @@ def process_data(data):
 EOF
 
 echo "1. 测试 --summary 模式..."
-OUTPUT=$("$SKILL_DIR/zh-proofread.sh" --summary "$TEST_DIR/test.py" 2>&1)
+OUTPUT=$("$SKILL_DIR/zh-lint.sh" --summary "$TEST_DIR/test.py" 2>&1)
 if echo "$OUTPUT" | grep -q "共提取"; then
     echo "   ✅ --summary 正常"
 else
@@ -36,7 +36,7 @@ fi
 echo ""
 echo "2. 测试 --export-review 模式..."
 REVIEW_FILE="$TEST_DIR/review.jsonl"
-"$SKILL_DIR/zh-proofread.sh" --export-review "$REVIEW_FILE" "$TEST_DIR/test.py" 2>&1
+"$SKILL_DIR/zh-lint.sh" --export-review "$REVIEW_FILE" "$TEST_DIR/test.py" 2>&1
 
 if [[ -f "$REVIEW_FILE" ]]; then
     LINE_COUNT=$(wc -l < "$REVIEW_FILE")
@@ -56,7 +56,7 @@ EOF
 # 复制测试文件
 cp "$TEST_DIR/test.py" "$TEST_DIR/test_backup.py"
 
-OUTPUT=$("$SKILL_DIR/zh-proofread.sh" --apply-review "$TEST_DIR/apply_test.jsonl" 2>&1)
+OUTPUT=$("$SKILL_DIR/zh-lint.sh" --apply-review "$TEST_DIR/apply_test.jsonl" 2>&1)
 if echo "$OUTPUT" | grep -q "Applied"; then
     echo "   ✅ --apply-review 正常"
     # 验证修改是否生效

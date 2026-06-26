@@ -9,7 +9,7 @@ describe('ApplyReview', () => {
   let tmpdir: string;
 
   beforeEach(() => {
-    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-proofread-apply-'));
+    tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'zh-lint-apply-'));
   });
 
   afterEach(() => {

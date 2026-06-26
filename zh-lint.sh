@@ -1,15 +1,15 @@
 #!/bin/bash
 # 中文校对 Skill — 主入口脚本
-# 用法: zh-proofread.sh [options] [path...]
+# 用法: zh-lint.sh [options] [path...]
 
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-SELF_CMD=$(printf '%q' "$SCRIPT_DIR/zh-proofread.sh")
+SELF_CMD=$(printf '%q' "$SCRIPT_DIR/zh-lint.sh")
 
 usage() {
     cat <<'EOF'
-用法: zh-proofread.sh [options] [path...]
+用法: zh-lint.sh [options] [path...]
 
 选项:
   --export-review <file>  导出中文文本段到 JSONL 文件，供 LLM 审查
@@ -28,22 +28,22 @@ usage() {
 
 示例:
   # 扫描当前目录并显示摘要
-  zh-proofread.sh --summary
+  zh-lint.sh --summary
 
   # 导出中文文本段供审查
-  zh-proofread.sh --export-review review.jsonl src/
+  zh-lint.sh --export-review review.jsonl src/
 
   # 批量处理：每次处理 50 个段落
-  zh-proofread.sh --export-review review.jsonl --batch-size 50 src/
+  zh-lint.sh --export-review review.jsonl --batch-size 50 src/
 
   # 续传：跳过前 50 个段落
-  zh-proofread.sh --export-review review.jsonl --batch-size 50 --batch-offset 50 src/
+  zh-lint.sh --export-review review.jsonl --batch-size 50 --batch-offset 50 src/
 
   # 预览修改差异
-  zh-proofread.sh --diff review.jsonl
+  zh-lint.sh --diff review.jsonl
 
   # 应用已批准的修改
-  zh-proofread.sh --apply-review review.jsonl
+  zh-lint.sh --apply-review review.jsonl
 EOF
 }
 

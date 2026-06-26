@@ -514,8 +514,8 @@ export class SegmentExtractor {
 
 function loadConfig(): Config {
   const candidates = [
-    path.join(process.cwd(), '.zh-proofread.toml'),
-    path.join(process.env.HOME ?? '~', '.zh-proofread.toml'),
+    path.join(process.cwd(), '.zh-lint.toml'),
+    path.join(process.env.HOME ?? '~', '.zh-lint.toml'),
   ];
   for (const candidate of candidates) {
     if (fs.existsSync(candidate)) {

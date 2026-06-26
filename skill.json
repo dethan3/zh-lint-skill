@@ -1,5 +1,5 @@
 {
-  "name": "zh-proofread",
+  "name": "zh-lint",
   "description": "检查中文文本中的错别字和语病，支持代码注释、文档、纯文本",
   "version": "0.1.0"
 }

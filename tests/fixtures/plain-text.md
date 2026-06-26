@@ -13,7 +13,7 @@
 运行以下命令开始扫描：
 
 ```
-zh-proofread.sh --export-review review.jsonl src/
+zh-lint.sh --export-review review.jsonl src/
 ```
 
 ## 注意事项

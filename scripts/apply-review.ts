@@ -229,7 +229,7 @@ function applyChanges(accepted: AcceptedItem[], dryRun = false): Record<string, 
       const newContent = lines.join('\n');
       const tmpFile = path.join(
         path.dirname(filepath),
-        `.${path.basename(filepath)}.zh-proofread-${Date.now()}.tmp`
+        `.${path.basename(filepath)}.zh-lint-${Date.now()}.tmp`
       );
       try {
         fs.writeFileSync(tmpFile, newContent, 'utf-8');

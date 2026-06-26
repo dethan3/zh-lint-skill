@@ -1,5 +1,5 @@
 {
-  "name": "zh-proofread-skill",
+  "name": "zh-lint-skill",
   "version": "1.0.0",
   "description": "检查代码注释、文档和纯文本中的中文错别字和语病。",
   "type": "module",
