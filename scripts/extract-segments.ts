@@ -14,7 +14,7 @@ interface Segment {
   line_end: number;
   char_offset: number;
   text: string;
-  context_type: 'comment' | 'string' | 'doc' | 'prose';
+  context_type: 'comment' | 'string' | 'prose';
   language: string;
   surrounding_code: string;
   source_url?: string;
@@ -359,7 +359,6 @@ export class SegmentExtractor {
     let paragraphStart = 0;
 
     for (let i = 0; i < lines.length; i++) {
-      const line = i;
       const lineNum = i + 1;
 
       if (!lines[i].trim()) {
@@ -678,7 +677,6 @@ interface CliArgs {
   summary: boolean;
   batchSize: number;
   batchOffset: number;
-  batchIndex: boolean;
 }
 
 function parseArgs(argv: string[]): CliArgs {
@@ -688,7 +686,6 @@ function parseArgs(argv: string[]): CliArgs {
     summary: false,
     batchSize: 0,
     batchOffset: 0,
-    batchIndex: false,
   };
 
   let i = 0;
@@ -702,8 +699,6 @@ function parseArgs(argv: string[]): CliArgs {
       args.batchSize = parseInt(argv[++i], 10);
     } else if (arg === '--batch-offset') {
       args.batchOffset = parseInt(argv[++i], 10);
-    } else if (arg === '--batch-index') {
-      args.batchIndex = true;
     } else if (arg === '--exclude') {
       while (i + 1 < argv.length && !argv[i + 1].startsWith('-')) {
         args.exclude.push(argv[++i]);
@@ -779,9 +774,6 @@ function main(): void {
 
   for (let idx = 0; idx < batchSegments.length; idx++) {
     const seg = { ...batchSegments[idx] };
-    if (args.batchIndex) {
-      (seg as any)._index = args.batchOffset + idx;
-    }
     const line = JSON.stringify(seg);
     if (output) {
       output.write(line + '\n');

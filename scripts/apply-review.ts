@@ -5,7 +5,6 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as os from 'node:os';
 
 // ── 类型定义 ──────────────────────────────────────────────
 
@@ -40,6 +39,55 @@ function die(message: string): never {
 function normalizeStatus(value: unknown): string {
   if (value == null) return '';
   return String(value).replace(/[_-]/g, ' ').trim().toUpperCase().replace(/\s+/g, ' ');
+}
+
+function resolveReviewPath(filePath: string, reviewPath: string): string {
+  if (path.isAbsolute(filePath)) {
+    return path.resolve(filePath);
+  }
+
+  const cwdPath = path.resolve(process.cwd(), filePath);
+  if (fs.existsSync(cwdPath)) {
+    return cwdPath;
+  }
+
+  return path.resolve(path.dirname(reviewPath), filePath);
+}
+
+function findAllOccurrences(text: string, needle: string): number[] {
+  const indices: number[] = [];
+  if (!needle) return indices;
+
+  let start = 0;
+  while (start <= text.length) {
+    const idx = text.indexOf(needle, start);
+    if (idx < 0) break;
+    indices.push(idx);
+    start = idx + Math.max(needle.length, 1);
+  }
+  return indices;
+}
+
+function findSingleLineIndex(line: string, item: AcceptedItem): number | null {
+  const { original, char_offset: charOffset } = item;
+  if (line.slice(charOffset, charOffset + original.length) === original) {
+    return charOffset;
+  }
+
+  const matches = findAllOccurrences(line, original);
+  if (matches.length === 1) {
+    return matches[0];
+  }
+
+  return null;
+}
+
+function findMultiLineIndex(text: string, original: string): number | null {
+  const matches = findAllOccurrences(text, original);
+  if (matches.length === 1) {
+    return matches[0];
+  }
+  return null;
 }
 
 // ── 加载审查文件 ──────────────────────────────────────────
@@ -114,11 +162,7 @@ function loadReview(reviewPath: string): { accepted: AcceptedItem[]; skipped: nu
       replacement = suggestion;
     }
 
-    // 解析路径
-    let resolvedPath = path.resolve(filePath);
-    if (!path.isAbsolute(filePath)) {
-      resolvedPath = path.resolve(path.dirname(reviewPath), filePath);
-    }
+    const resolvedPath = resolveReviewPath(filePath, reviewPath);
 
     const lineStart = item.line_start;
     if (lineStart == null) {
@@ -184,17 +228,13 @@ function applyChanges(accepted: AcceptedItem[], dryRun = false): Record<string, 
       const line = lines[lineIdx];
       const { original, replacement } = item;
 
-      // 尝试在行内定位原文
-      let foundIdx = line.indexOf(original, item.char_offset);
-      if (foundIdx < 0) {
-        foundIdx = line.indexOf(original);
-      }
+      const foundIdx = findSingleLineIndex(line, item);
 
-      if (foundIdx < 0) {
+      if (foundIdx == null) {
         // 尝试跨行匹配
         const multiLineText = lines.slice(item.line_start - 1, item.line_end).join('\n');
-        const multiIdx = multiLineText.indexOf(original);
-        if (multiIdx >= 0) {
+        const multiIdx = findMultiLineIndex(multiLineText, original);
+        if (multiIdx != null) {
           if (dryRun) {
             console.log(`--- ${filepath}:${item.line_start}`);
             console.log(`- ${original}`);
@@ -208,7 +248,12 @@ function applyChanges(accepted: AcceptedItem[], dryRun = false): Record<string, 
           appliedCount++;
           continue;
         } else {
-          console.error(`Warning: cannot find "${original}" in ${filepath}:${item.line_start}`);
+          const matches = findAllOccurrences(line, original).length;
+          if (matches > 1) {
+            console.error(`Warning: ambiguous match for "${original}" in ${filepath}:${item.line_start}`);
+          } else {
+            console.error(`Warning: cannot find "${original}" in ${filepath}:${item.line_start}`);
+          }
           continue;
         }
       }
@@ -227,12 +272,14 @@ function applyChanges(accepted: AcceptedItem[], dryRun = false): Record<string, 
 
     if (!dryRun && appliedCount > 0) {
       const newContent = lines.join('\n');
+      const stat = fs.statSync(filepath);
       const tmpFile = path.join(
         path.dirname(filepath),
         `.${path.basename(filepath)}.zh-lint-${Date.now()}.tmp`
       );
       try {
         fs.writeFileSync(tmpFile, newContent, 'utf-8');
+        fs.chmodSync(tmpFile, stat.mode);
         fs.renameSync(tmpFile, filepath);
         results[filepath] = appliedCount;
       } catch (e) {

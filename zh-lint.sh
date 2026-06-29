@@ -52,7 +52,7 @@ EXPORT_REVIEW_FILE=""
 REVIEW_FILE=""
 PATHS=()
 SUMMARY_ONLY=0
-RUNNER=""
+RUNNER=()
 
 set_action() {
     local requested="$1"
@@ -64,16 +64,20 @@ set_action() {
 }
 
 require_runner() {
-    if [[ -n "$RUNNER" ]]; then
+    if [[ ${#RUNNER[@]} -gt 0 ]]; then
         return 0
     fi
-    # 优先使用 tsx，其次 npx tsx
+    # 优先使用项目内 tsx，其次全局 tsx，最后 npx tsx
+    if [[ -x "$SCRIPT_DIR/node_modules/.bin/tsx" ]]; then
+        RUNNER=("$SCRIPT_DIR/node_modules/.bin/tsx")
+        return 0
+    fi
     if command -v tsx >/dev/null 2>&1; then
-        RUNNER="tsx"
+        RUNNER=("tsx")
         return 0
     fi
     if command -v npx >/dev/null 2>&1; then
-        RUNNER="npx tsx"
+        RUNNER=("npx" "tsx")
         return 0
     fi
     echo "Error: 需要 tsx 或 npx（npm install -g tsx 或 npm install tsx）。" >&2
@@ -174,7 +178,7 @@ if [[ "$ACTION" == "apply" ]]; then
         echo "Error: 审查文件不存在: $REVIEW_FILE" >&2
         exit 2
     fi
-    $RUNNER "$SCRIPT_DIR/scripts/apply-review.ts" "$REVIEW_FILE"
+    "${RUNNER[@]}" "$SCRIPT_DIR/scripts/apply-review.ts" "$REVIEW_FILE"
     exit 0
 fi
 
@@ -188,7 +192,7 @@ if [[ "$ACTION" == "diff" ]]; then
         echo "Error: 审查文件不存在: $REVIEW_FILE" >&2
         exit 2
     fi
-    $RUNNER "$SCRIPT_DIR/scripts/apply-review.ts" --dry-run "$REVIEW_FILE"
+    "${RUNNER[@]}" "$SCRIPT_DIR/scripts/apply-review.ts" --dry-run "$REVIEW_FILE"
     exit 0
 fi
 
@@ -209,7 +213,7 @@ if [[ "${BATCH_SIZE:-0}" -gt 0 ]]; then
     EXTRACT_ARGS+=("--batch-size" "$BATCH_SIZE" "--batch-offset" "${BATCH_OFFSET:-0}")
 fi
 
-$RUNNER "$SCRIPT_DIR/scripts/extract-segments.ts" "${EXTRACT_ARGS[@]}"
+"${RUNNER[@]}" "$SCRIPT_DIR/scripts/extract-segments.ts" "${EXTRACT_ARGS[@]}"
 
 echo ""
 echo "======================================"

@@ -2,10 +2,12 @@
 
 检查代码注释、文档和纯文本中的中文错别字和语病。
 
+这是一个 **Skill + 可选工具** 项目：Agent 至少可以读取 `SKILL.md` 后用自己的搜索、读取和编辑能力完成中文校对；当环境支持 shell 和 Node/tsx 时，可以使用 `zh-lint.sh` 批量提取、审查和应用修改。
+
 ## 与 typos-skill 的区别
 
-| | typos-skill | zh-lint |
-|---|---|---|
+|  | typos-skill | zh-lint |
+| --- | --- | --- |
 | 检查对象 | 英文拼写 | 中文错别字和语病 |
 | 检查引擎 | `typos-cli` 规则引擎 | LLM 语义理解 |
 | 误报处理 | 规则分类 | LLM 判断 + 保守策略 |
@@ -26,6 +28,23 @@ cp -r zh-lint-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-lint
 ```
 
 ## 使用方法
+
+### Agent fallback
+
+如果当前 Agent 环境不能运行脚本，可以直接按 `SKILL.md` 的 fallback 流程批量搜索中文并逐文件审查：
+
+```bash
+rg -n --pcre2 '[\p{Han}\x{3000}-\x{303F}\x{FF00}-\x{FFEF}]' \
+  --glob '!node_modules/**' \
+  --glob '!.git/**' \
+  --glob '!dist/**' \
+  --glob '!build/**' \
+  .
+```
+
+### 工具模式
+
+以下命令需要 Node.js 和 tsx。
 
 ### 扫描当前目录
 
@@ -102,7 +121,7 @@ cp -r zh-lint-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-lint
 ### 字段说明
 
 | 字段 | 说明 |
-|------|------|
+| --- | --- |
 | `path` | 文件路径 |
 | `line_start` / `line_end` | 起止行号 |
 | `char_offset` | 行内字符偏移 |
@@ -117,7 +136,7 @@ cp -r zh-lint-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-lint
 ### 审查状态
 
 | 状态 | 说明 |
-|------|------|
+| --- | --- |
 | `PENDING` | 待审查 |
 | `ACCEPT` | 接受建议修改 |
 | `FALSE POSITIVE` | 误报，跳过 |
@@ -132,7 +151,7 @@ cp -r zh-lint-skill ${CODEX_HOME:-$HOME/.codex}/skills/zh-lint
 ## 检查的问题类型
 
 | 类型 | 说明 | 示例 |
-|------|------|------|
+| --- | --- | --- |
 | typo | 错别字 | "以经" → "已经" |
 | grammar | 语法错误 | "通过...使..." 主语残缺 |
 | awkward | 不通顺 | 语序不当、表达别扭 |
@@ -154,13 +173,14 @@ terms = ["正则表达式", "哈希表", "yyds"]
 ```
 
 配置文件查找顺序：
+
 1. 当前目录 `.zh-lint.toml`
 2. 用户主目录 `~/.zh-lint.toml`
 
 ## 依赖
 
-- Node.js 18+
-- tsx（`npm install -g tsx` 或项目内 `npm install`）
+- Skill fallback：无额外依赖，由 Agent 使用自身搜索和编辑能力完成
+- 工具模式：Node.js 18+，tsx（`npm install` 后使用项目内依赖，或安装全局 tsx）
 
 ## 文件结构
 
@@ -168,7 +188,7 @@ terms = ["正则表达式", "哈希表", "yyds"]
 zh-lint-skill/
 ├── SKILL.md                      # Agent 指令
 ├── skill.json                    # 元数据
-├── zh-lint.sh               # 主入口脚本（唯一入口）
+├── zh-lint.sh                    # 推荐工具入口
 ├── scripts/
 │   ├── extract-segments.ts       # 中文文本提取
 │   ├── apply-review.ts           # 应用已批准的修改
